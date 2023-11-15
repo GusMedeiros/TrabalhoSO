@@ -26,7 +26,8 @@ class GerenciadorMemoria:
 
     def alocar_processo(self, paginas: List[Pagina]):
         for pagina in paginas:
-            self.memoria.alocar(pagina)
+            if not pagina.P:
+                self.memoria.alocar(pagina)
 
     def calcular_uso(self):
         return self.memoria.calcular_uso()

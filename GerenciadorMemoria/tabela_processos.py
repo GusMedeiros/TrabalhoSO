@@ -14,7 +14,6 @@ class TabelaProcessos:
             id_processo = self.create_id()
         self.processos.append(Processo(id_processo, tamanho, self.tamanho_pagina))
 
-
     def create_id(self):
         id_processo = self.prox_id
         self.prox_id += 1
