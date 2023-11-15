@@ -12,5 +12,5 @@ class PaginasProcesso:
         print(tamanho_processo, tamanho_pagina, qtd_paginas)
         for i_pagina in range(qtd_paginas):
             self.paginas.append(Pagina(i_pagina))
-            print(i_pagina)
+            
 

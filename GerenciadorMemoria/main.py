@@ -7,6 +7,6 @@ def main():
         print("Erro! O tamanho da memória não é múltiplo do tamanho da página.")
     gerenciador_memoria = GerenciadorMemoria(tamanho_memoria_principal, tamanho_pagina)
     gerenciador_memoria.cria_processo(500 * pow(2, 20), 1)
-    print()
+    print(gerenciador_memoria.calcular_uso())
 
 main()

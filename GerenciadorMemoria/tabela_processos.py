@@ -14,6 +14,7 @@ class TabelaProcessos:
             id_processo = self.create_id()
         self.processos.append(Processo(id_processo, tamanho, self.tamanho_pagina))
 
+
     def create_id(self):
         id_processo = self.prox_id
         self.prox_id += 1
@@ -25,4 +26,4 @@ class TabelaProcessos:
     def busca_processo(self, id_processo):
         for processo in self.processos:
             if processo.id == id_processo:
-                return id_processo
+                return processo
