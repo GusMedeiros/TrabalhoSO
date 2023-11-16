@@ -13,7 +13,7 @@ class Memoria:
     def _criar_quadros(self, tamanho_memoria, tamanho_quadro):
         qtd_quadros = tamanho_memoria // tamanho_quadro
         for i in range(qtd_quadros - 1):
-            self.lista_enderecos.append((Quadro(0)))
+            self.lista_enderecos.append((Quadro(tamanho_quadro)))
 
     def alocar(self, pagina: Pagina):
         i_quadro, quadro_atual = self.next()

@@ -1,3 +1,4 @@
+from GerenciadorMemoria.debug_logger import DebugLogger
 from GerenciadorMemoria.gerenciador_memoria import GerenciadorMemoria
 from config import *
 
@@ -8,6 +9,8 @@ def main():
     gerenciador_memoria = GerenciadorMemoria(tamanho_memoria_principal, tamanho_pagina)
     gerenciador_memoria.cria_processo(500 * pow(2, 20), 1)
     print(f"{gerenciador_memoria.calcular_uso()*100:.2f}%")
+    input()
 
 
+DebugLogger.ligar()
 main()

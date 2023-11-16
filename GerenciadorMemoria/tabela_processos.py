@@ -26,3 +26,8 @@ class TabelaProcessos:
         for processo in self.processos:
             if processo.id == id_processo:
                 return processo
+
+    def indice_processo(self, id_processo):
+        for i, processo in zip(self.processos):
+            if processo.id == id_processo:
+                return i
