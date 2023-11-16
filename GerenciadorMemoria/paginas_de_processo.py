@@ -1,5 +1,7 @@
 from typing import List
 from math import ceil
+
+from GerenciadorMemoria.debug_logger import DebugLogger
 from GerenciadorMemoria.pagina import Pagina
 
 
@@ -11,6 +13,7 @@ class PaginasProcesso:
         qtd_paginas = ceil(tamanho_processo/tamanho_pagina)
         # print(tamanho_processo, tamanho_pagina, qtd_paginas)
         for i_pagina in range(qtd_paginas):
-            self.paginas.append(Pagina(i_pagina))
+            DebugLogger.log(f"Criando página {i_pagina} na tabela de páginas do processo")
+            self.paginas.append(Pagina(0))
             
 
