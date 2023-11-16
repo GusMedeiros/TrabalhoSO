@@ -4,6 +4,7 @@ from config import *
 
 
 def main():
+    print(f"Tamanho memória principal: {tamanho_memoria_principal}b | Tamanho da página: {tamanho_pagina}b\n")
     print("Inicializando a memória. Isso pode demorar")
     if tamanho_memoria_principal % tamanho_pagina != 0:
         raise Exception("Erro! O tamanho da memória não é múltiplo do tamanho da página.")
