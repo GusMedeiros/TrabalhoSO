@@ -1,8 +1,8 @@
 from typing import List
 
-from GerenciadorMemoria.debug_logger import DebugLogger
-from GerenciadorMemoria.pagina import Pagina
-from GerenciadorMemoria.quadro import Quadro
+from debug_logger import DebugLogger
+from pagina import Pagina
+from quadro import Quadro
 
 
 class Memoria:

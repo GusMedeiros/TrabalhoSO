@@ -1,8 +1,8 @@
 from typing import List
 from math import ceil
 
-from GerenciadorMemoria.debug_logger import DebugLogger
-from GerenciadorMemoria.pagina import Pagina
+from debug_logger import DebugLogger
+from pagina import Pagina
 
 
 class PaginasProcesso:

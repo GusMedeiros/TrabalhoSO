@@ -1,9 +1,9 @@
 from math import ceil
 from typing import List
 
-from GerenciadorMemoria.debug_logger import DebugLogger
-from GerenciadorMemoria.memoria import Memoria
-from GerenciadorMemoria.pagina import Pagina
+from debug_logger import DebugLogger
+from memoria import Memoria
+from pagina import Pagina
 from tabela_processos import TabelaProcessos
 
 

@@ -1,5 +1,5 @@
-from GerenciadorMemoria.debug_logger import DebugLogger
-from GerenciadorMemoria.gerenciador_memoria import GerenciadorMemoria
+from debug_logger import DebugLogger
+from gerenciador_memoria import GerenciadorMemoria
 from config import *
 
 
