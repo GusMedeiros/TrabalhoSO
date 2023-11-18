@@ -49,20 +49,11 @@ class GerenciadorMemoria:
     
     def leitura_de_memoria(self, id_processo, endereco_logico):
         processo = self.tabela_processos.busca_processo(id_processo)
-        ## determina o número de bits necessários para representar uma página
-        total_de_paginas = self.calcula_qtd_paginas(processo.tamanho)
-        bits_pagina = total_de_paginas.bit_length()
-        bits_offset = tamanho_pagina.bit_length() - bits_pagina
         
-        #Andamos o valor do offset para a direita para obter o número da página
-        numero_pagina = endereco_logico >> bits_offset
-        if(numero_pagina > total_de_paginas):
-            print("ERRO: tentativa de acessar página fora do limite")
-            return
-        #Pegamos os bits menos significativos como o offset
-        offset = endereco_logico % pow(2, bits_offset)
-        print(f"Lendo página {numero_pagina} com offset {offset} de P{id_processo}")
-        pagina_pedida = processo.get_paginas()[numero_pagina]
+        pag_e_offset = processo.get_num_pagina_e_offset(endereco_logico)
+
+        print(f"Lendo página {pag_e_offset['pagina']} {pag_e_offset['offset']} de P{id_processo}")
+        pagina_pedida = processo.get_paginas()[pag_e_offset['pagina']]
         if pagina_pedida.P:
             #Se a pagina está na memória, retorna o valor no quadro correspondente
             #TODO: Valor no dado offset de um quadro
