@@ -51,8 +51,8 @@ class interpretador:
                 # Pedido de leitura em args[2]
                 gm.leitura_de_memoria(args[2])
             case "W":
-                # Pedido de escrita em args[2]
-                gm.escrita_em_memoria(args[2])
+                # Pedido de escrita de args[3] em args[2]
+                gm.escrita_em_memoria(args[2], args[3])
             case "T":
                 gm.termina_processo(args[0])
             case _:

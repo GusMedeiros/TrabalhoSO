@@ -17,7 +17,8 @@ def main():
     gerenciador_memoria.cria_processo(3 * pow(2, 20))
 
     gerenciador_memoria.leitura_de_memoria(1, 0b1011001111110111100000)
-
+    gerenciador_memoria.escrita_em_memoria(1, 0b1011001111110111100000, 10)
+    gerenciador_memoria.leitura_de_memoria(1, 0b1011001111110111100000)
     input("Main finalizada. Aperte qualquer botão para sair")
 
 
