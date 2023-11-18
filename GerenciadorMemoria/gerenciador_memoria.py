@@ -5,7 +5,7 @@ from debug_logger import DebugLogger
 from memoria import Memoria
 from pagina import Pagina
 from tabela_processos import TabelaProcessos
-
+from config import qtd_bits_endereco, tamanho_pagina
 
 class GerenciadorMemoria:
 
@@ -46,4 +46,29 @@ class GerenciadorMemoria:
 
     def calcular_uso(self):
         return 1 - self.memoria.qtd_quadros_ocupados()/self.memoria.total_quadros()
+    
+    def leitura_de_memoria(self, id_processo, endereco_logico):
+        processo = self.tabela_processos.busca_processo(id_processo)
+        ## determina o número de bits necessários para representar uma página
+        total_de_paginas = self.calcula_qtd_paginas(processo.tamanho)
+        bits_pagina = total_de_paginas.bit_length()
+        bits_offset = tamanho_pagina.bit_length() - bits_pagina
+        
+        #Andamos o valor do offset para a direita para obter o número da página
+        numero_pagina = endereco_logico >> bits_offset
+        if(numero_pagina > total_de_paginas):
+            print("ERRO: tentativa de acessar página fora do limite")
+            return
+        #Pegamos os bits menos significativos como o offset
+        offset = endereco_logico % pow(2, bits_offset)
+        print(f"Lendo página {numero_pagina} com offset {offset} de P{id_processo}")
+        pagina_pedida = processo.get_paginas()[numero_pagina]
+        if pagina_pedida.P:
+            #Se a pagina está na memória, retorna o valor no quadro correspondente
+            #TODO: Valor no dado offset de um quadro
+            return pagina_pedida.P
+        else:
+            #TODO: Trazer processo da memória secundária para a principal
+            return
+        return
 
