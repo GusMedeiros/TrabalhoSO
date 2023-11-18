@@ -41,6 +41,7 @@ class GerenciadorMemoria:
                 DebugLogger.log(f"Página {i} não presente na MP.")
                 self.memoria.alocar(pagina)
                 DebugLogger.log(f"Página {i} Alocada com sucesso.")
+                pagina.P = True
             else:
                 DebugLogger.log(f"Página {i} já está presente na MP. Prosseguindo")
 
@@ -56,8 +57,8 @@ class GerenciadorMemoria:
         pagina_pedida = processo.get_paginas()[pag_e_offset['pagina']]
         if pagina_pedida.P:
             #Se a pagina está na memória, retorna o valor no quadro correspondente
-            #TODO: Valor no dado offset de um quadro
-            return pagina_pedida.P
+            quadro = self.memoria.lista_enderecos[pagina_pedida.numero_quadro]
+            print(f"Valor no byte {pag_e_offset['offset']} do quadro {pagina_pedida.numero_quadro} = {quadro.bytes[pag_e_offset['offset']]}")
         else:
             #TODO: Trazer processo da memória secundária para a principal
             return

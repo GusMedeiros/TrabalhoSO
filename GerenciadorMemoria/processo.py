@@ -23,8 +23,8 @@ class Processo:
         bits_offset = tamanho_pagina.bit_length() - bits_pagina
         
         #Andamos o valor do offset para a direita para obter o número da página
-        numero_pagina = endereco_logico >> bits_offset
-        if(numero_pagina > total_de_paginas):
+        numero_pagina = endereco_logico >> (bits_offset+1)
+        if(numero_pagina >= total_de_paginas):
             print("ERRO: tentativa de acessar página fora do limite")
             return
         #Pegamos os bits_offset menos significativos como o offset
