@@ -19,6 +19,7 @@ def main():
     gerenciador_memoria.leitura_de_memoria(1, 0b1011001111110111100000)
     gerenciador_memoria.escrita_em_memoria(1, 0b1011001111110111100000, 10)
     gerenciador_memoria.leitura_de_memoria(1, 0b1011001111110111100000)
+    gerenciador_memoria.acessa_instrucao(1, 0b0111001111110111100000)
     input("Main finalizada. Aperte qualquer botão para sair")
 
 
