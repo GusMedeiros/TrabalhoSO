@@ -28,9 +28,9 @@ class interpretador:
         args[0].replace("P", '')#deixa só o valor númerico como id do processo
         match args[1]:
             case "P":
-                gm.acessa_instrucao(args[2])
+                gm.acessa_instrucao(args[0], args[2])
             case "I":
-                gm.acessa_disp_IO(args[2])
+                gm.acessa_disp_IO(args[0], args[2])
                 # Suspende
             case "C":
                 # Cria novo processo com tamanho args[2] e unidade args[3]
@@ -49,10 +49,10 @@ class interpretador:
                 gm.cria_processo(tam, args[0])
             case "R":
                 # Pedido de leitura em args[2]
-                gm.leitura_de_memoria(args[2])
+                gm.leitura_de_memoria(args[0], args[2])
             case "W":
                 # Pedido de escrita de args[3] em args[2]
-                gm.escrita_em_memoria(args[2], args[3])
+                gm.escrita_em_memoria(args[0], args[2], args[3])
             case "T":
                 gm.termina_processo(args[0])
             case _:

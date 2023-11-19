@@ -96,4 +96,7 @@ class GerenciadorMemoria:
         operacao = "soma" if endereco_logico % 2 == 0 else "subtração"
         print(f"Resultado da {operacao}: {resultado}")
         return
-        
+    
+    def acessa_disp_IO(self, id_processo, dispositivo):
+        print(f"P{id_processo} está realizando uma operação de E/S no dispositivo {dispositivo}.")
+        #TODO: Interrupção/suspensão de processo
