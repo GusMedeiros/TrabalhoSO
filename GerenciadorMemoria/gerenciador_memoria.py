@@ -1,11 +1,12 @@
 from math import ceil
 from typing import List
+from random import randint
 
-from GerenciadorMemoria.debug_logger import DebugLogger
-from GerenciadorMemoria.memoria import Memoria
-from GerenciadorMemoria.pagina import Pagina
+from debug_logger import DebugLogger
+from memoria import Memoria
+from pagina import Pagina
 from tabela_processos import TabelaProcessos
-
+from config import qtd_bits_endereco, tamanho_pagina
 
 class GerenciadorMemoria:
 
@@ -41,9 +42,61 @@ class GerenciadorMemoria:
                 DebugLogger.log(f"Página {i} não presente na MP.")
                 self.memoria.alocar(pagina)
                 DebugLogger.log(f"Página {i} Alocada com sucesso.")
+                pagina.P = True
             else:
                 DebugLogger.log(f"Página {i} já está presente na MP. Prosseguindo")
 
     def calcular_uso(self):
         return 1 - self.memoria.qtd_quadros_ocupados()/self.memoria.total_quadros()
+    
+    def leitura_de_memoria(self, id_processo, endereco_logico):
+        processo = self.tabela_processos.busca_processo(id_processo)
+        
+        pag_e_offset = processo.get_num_pagina_e_offset(endereco_logico)
 
+        print(f"Lendo página {pag_e_offset['pagina']}, offset {pag_e_offset['offset']} de P{id_processo}")
+        pagina_pedida = processo.get_paginas()[pag_e_offset['pagina']]
+        if not pagina_pedida.P:
+            #TODO: Trazer a pagina da memória virtual para a memória principal
+            return
+        quadro = self.memoria.lista_enderecos[pagina_pedida.numero_quadro]
+        print(f"Valor no byte {pag_e_offset['offset']} do quadro {pagina_pedida.numero_quadro} = {quadro.bytes[pag_e_offset['offset']]}")
+        return
+    
+    def escrita_em_memoria(self, id_processo, endereco_logico, valor):
+        processo = self.tabela_processos.busca_processo(id_processo)
+        
+        pag_e_offset = processo.get_num_pagina_e_offset(endereco_logico)
+
+        print(f"Acessando página {pag_e_offset['pagina']}, offset {pag_e_offset['offset']} de P{id_processo}")
+        pagina_pedida = processo.get_paginas()[pag_e_offset['pagina']]
+        if not pagina_pedida.P:
+            #TODO: Trazer a pagina da memória virtual para a memória principal
+            return
+        #quando a pagina está na memória, retorna o valor no quadro correspondente
+        quadro = self.memoria.lista_enderecos[pagina_pedida.numero_quadro]
+        quadro.bytes[pag_e_offset["offset"]] = valor
+        pagina_pedida.M = True
+        print(f"Escrito o valor {valor} no offset {pag_e_offset['offset']} do quadro {pagina_pedida.numero_quadro}")
+        
+        return
+    def acessa_instrucao(self, id_processo, endereco_logico):
+        #Não está claro se a execução opera sobre outras paginas do processo
+        #Nesse caso, iremos usar valores aleátorios
+        processo = self.tabela_processos.busca_processo(id_processo)
+        
+        pag_e_offset = processo.get_num_pagina_e_offset(endereco_logico)
+
+        print(f"Acessando intrução na página {pag_e_offset['pagina']}, offset {pag_e_offset['offset']} de P{id_processo}")
+        pagina_pedida = processo.get_paginas()[pag_e_offset['pagina']]
+        if not pagina_pedida.P:
+            #TODO: Trazer a pagina da memória virtual para a memória principal
+            return
+        resultado = randint(0, 10000)
+        operacao = "soma" if endereco_logico % 2 == 0 else "subtração"
+        print(f"Resultado da {operacao}: {resultado}")
+        return
+    
+    def acessa_disp_IO(self, id_processo, dispositivo):
+        print(f"P{id_processo} está realizando uma operação de E/S no dispositivo {dispositivo}.")
+        #TODO: Interrupção/suspensão de processo

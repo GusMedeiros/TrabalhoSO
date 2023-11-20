@@ -1,6 +1,6 @@
 from typing import List
 
-from GerenciadorMemoria.debug_logger import DebugLogger
+from debug_logger import DebugLogger
 from processo import Processo
 
 
