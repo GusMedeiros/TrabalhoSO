@@ -3,7 +3,6 @@ from typing import List
 from debug_logger import DebugLogger
 from pagina import Pagina
 from quadro import Quadro
-from config import ciclo
 
 class Memoria:
     def __init__(self, tamanho_memoria, tamanho_quadro):
@@ -18,7 +17,7 @@ class Memoria:
         for i in range(qtd_quadros):
             self.lista_enderecos.append((Quadro(tamanho_quadro)))
 
-    def alocar(self, pagina: Pagina):
+    def alocar(self, pagina: Pagina, ciclo):
         #Os retornos podem ser colocados em um if para determinar se o LRU deve ser ativado
         i_quadro, quadro_atual = self.next()
         inicio_busca = i_quadro

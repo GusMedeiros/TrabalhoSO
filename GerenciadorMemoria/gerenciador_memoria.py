@@ -22,7 +22,7 @@ class GerenciadorMemoria:
         self.memoria_secundaria = MemoriaVirtual(tamanho_memoria_secundaria, tamanho_pagina)
         DebugLogger.log("===Memória secundária inicializada.\n")
 
-    def cria_processo(self, tamanho, id_processo=None):
+    def cria_processo(self, tamanho, ciclo, id_processo=None):
         DebugLogger.log(f"===Criando processo de {tamanho}b")
         id_processo = self.tabela_processos.cria_processo(tamanho, id_processo)
         DebugLogger.log(f"P{id_processo} Alocado na tabela de processos no índice {self.tabela_processos.indice_processo(id_processo)}\n")
@@ -31,19 +31,21 @@ class GerenciadorMemoria:
         tem_espaco = self.memoria.checar_disponibilidade(self.calcula_qtd_paginas(processo.tamanho))
         if tem_espaco:
             DebugLogger.log(f"Espaço disponível. Alocando quadros na memória principal")
-            self.alocar_processo(processo.get_paginas())
+            self.alocar_processo(processo.get_paginas(), ciclo)
             DebugLogger.log(f"===Processo alocado com sucesso. Espaço utilizado: {self.calcular_uso()*100:.2f}%\n")
             return
-        DebugLogger.log(f"Espaço indisponível.")
+        DebugLogger.log(f"Espaço indisponível. Alocando para a memoria secundaria")
+        for i in processo.get_paginas():
+            self.memoria_secundaria.grava_pagina(i, None)
 
     def calcula_qtd_paginas(self, tamanho):
         return ceil(tamanho//self.tamanho_pagina)
 
-    def alocar_processo(self, paginas: List[Pagina]):
+    def alocar_processo(self, paginas: List[Pagina], ciclo):
         for i, pagina in enumerate(paginas):
             if not pagina.P:
                 DebugLogger.log(f"Página {i} não presente na MP.")
-                if not self.memoria.alocar(pagina):
+                if not self.memoria.alocar(pagina, ciclo):
                     #No caso do processo não caber totalmente na MP, alocar o restante na memória virtual
                     self.memoria_secundaria.grava_pagina(pagina, None)
                 DebugLogger.log(f"Página {i} Alocada com sucesso.")
@@ -54,7 +56,7 @@ class GerenciadorMemoria:
     def calcular_uso(self):
         return 1 - self.memoria.qtd_quadros_ocupados()/self.memoria.total_quadros()
     
-    def leitura_de_memoria(self, id_processo, endereco_logico):
+    def leitura_de_memoria(self, id_processo, endereco_logico, ciclo):
         processo = self.tabela_processos.busca_processo(id_processo)
         
         pag_e_offset = processo.get_num_pagina_e_offset(endereco_logico)
@@ -69,7 +71,7 @@ class GerenciadorMemoria:
         pagina_pedida.ciclo_ultimo_acesso = ciclo
         return
     
-    def escrita_em_memoria(self, id_processo, endereco_logico, valor):
+    def escrita_em_memoria(self, id_processo, endereco_logico, valor, ciclo):
         processo = self.tabela_processos.busca_processo(id_processo)
         
         pag_e_offset = processo.get_num_pagina_e_offset(endereco_logico)
@@ -86,7 +88,7 @@ class GerenciadorMemoria:
         print(f"Escrito o valor {valor} no offset {pag_e_offset['offset']} do quadro {pagina_pedida.numero_quadro}")
         pagina_pedida.ciclo_ultimo_acesso = ciclo
         return
-    def acessa_instrucao(self, id_processo, endereco_logico):
+    def acessa_instrucao(self, id_processo, endereco_logico, ciclo):
         #Não está claro se a execução opera sobre outras paginas do processo
         #Nesse caso, iremos usar valores aleátorios
         processo = self.tabela_processos.busca_processo(id_processo)
@@ -108,7 +110,7 @@ class GerenciadorMemoria:
         print(f"P{id_processo} está realizando uma operação de E/S no dispositivo {dispositivo}.")
         #TODO: Interrupção/suspensão de processo
 
-    def lru(self, pagina_pedida: Pagina):
+    def lru(self, pagina_pedida: Pagina, ciclo):
         #Começamos da primeira página
         pagina_mais_antiga = self.tabela_processos.get_processos()[0].get_paginas()[0]
 
@@ -127,7 +129,7 @@ class GerenciadorMemoria:
         pagina_mais_antiga.ciclo_ultimo_acesso = None
         #Adicionando a nova pagina
         conteudo = self.memoria_secundaria.remove_pagina(pagina_pedida)    
-        self.memoria.alocar(pagina_pedida)
+        self.memoria.alocar(pagina_pedida, ciclo)
 
         if conteudo is not None and len(conteudo) > 0:
             quadro = self.memoria.lista_enderecos[pagina_pedida.numero_quadro]
