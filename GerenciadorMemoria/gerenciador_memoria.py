@@ -65,7 +65,6 @@ class GerenciadorMemoria:
         pagina_pedida = processo.get_paginas()[pag_e_offset['pagina']]
         if not pagina_pedida.P:
             self.lru(pagina_pedida)
-            return
         quadro = self.memoria.lista_enderecos[pagina_pedida.numero_quadro]
         print(f"Valor no byte {pag_e_offset['offset']} do quadro {pagina_pedida.numero_quadro} = {quadro.bytes[pag_e_offset['offset']]}")
         pagina_pedida.ciclo_ultimo_acesso = ciclo
@@ -80,7 +79,6 @@ class GerenciadorMemoria:
         pagina_pedida = processo.get_paginas()[pag_e_offset['pagina']]
         if not pagina_pedida.P:
             self.lru(pagina_pedida)
-            return
         #quando a pagina está na memória, retorna o valor no quadro correspondente
         quadro = self.memoria.lista_enderecos[pagina_pedida.numero_quadro]
         quadro.bytes[pag_e_offset["offset"]] = valor
@@ -98,11 +96,10 @@ class GerenciadorMemoria:
         print(f"Acessando intrução na página {pag_e_offset['pagina']}, offset {pag_e_offset['offset']} de P{id_processo}")
         pagina_pedida = processo.get_paginas()[pag_e_offset['pagina']]
         if not pagina_pedida.P:
-            self.lru(pagina_pedida)
-            return
+            self.lru(pagina_pedida, ciclo)
         resultado = randint(0, 10000)
         operacao = "soma" if endereco_logico % 2 == 0 else "subtração"
-        print(f"Resultado da {operacao}: {resultado}")
+        print(f"Resultado da {operacao} em {pag_e_offset['pagina']}, offset {pag_e_offset['offset']} de P{id_processo}: {resultado}")
         pagina_pedida.ciclo_ultimo_acesso = ciclo
         return
     
@@ -119,7 +116,7 @@ class GerenciadorMemoria:
             for pag in proc.get_paginas():
                 if pag.ciclo_ultimo_acesso < pagina_mais_antiga.ciclo_ultimo_acesso:
                     pagina_mais_antiga = pag
-        print(f"Substituindo a página {pagina_mais_antiga} por {pagina_pedida}.")
+        print(f"Substituindo a página {pagina_mais_antiga.numero} de P{pagina_mais_antiga.id_processo} por {pagina_pedida.numero} de P{pagina_pedida.id_processo}.")
 
         #Removendo a pagina mais antiga da memória
         pagina_mais_antiga.P = False

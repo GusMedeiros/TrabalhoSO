@@ -43,7 +43,7 @@ class Memoria:
     def desalocar(self, pagina : Pagina):
         quadro = self.lista_enderecos[pagina.numero_quadro]
         quadro.ocupado = False
-        for i in len(quadro.bytes):
+        for i in range(len(quadro.bytes)):
             quadro.bytes[i] = 0
         return
 

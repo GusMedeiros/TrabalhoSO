@@ -13,10 +13,11 @@ class MemoriaVirtual:
         self.quadros_virtuais.append(_QuadroMemoriaVirtual(quadro, pagina))
         print(f"Página {pagina.numero} de P{pagina.id_processo} foi alocada na memoria virtual")
 
-    def remove_pagina(self, numero_pagina, id_processo):
-        for qv in self.quadros_virtuais:
-            if qv.pagina.id == numero_pagina and qv.pagina.id_processo == id_processo:
-                return self.quadros_virtuais.pop(qv)
+    def remove_pagina(self, pagina_pedida):
+        for i in range(len(self.quadros_virtuais)):
+            if self.quadros_virtuais[i].pagina == pagina_pedida:
+                qv = self.quadros_virtuais.pop(i)
+                return qv.valores
         print("Pagina não encontrada!")
         return None
 
