@@ -4,7 +4,6 @@ from debug_logger import DebugLogger
 from pagina import Pagina
 from quadro import Quadro
 
-
 class Memoria:
     def __init__(self, tamanho_memoria, tamanho_quadro):
         self.proximo_indice = 0
@@ -18,14 +17,16 @@ class Memoria:
         for i in range(qtd_quadros):
             self.lista_enderecos.append((Quadro(tamanho_quadro)))
 
-    def alocar(self, pagina: Pagina):
+    def alocar(self, pagina: Pagina, ciclo):
+        #Os retornos podem ser colocados em um if para determinar se o LRU deve ser ativado
         i_quadro, quadro_atual = self.next()
         inicio_busca = i_quadro
         if not quadro_atual.ocupado:
             DebugLogger.log(f"Quadro {i_quadro} disponível. Alocando")
             quadro_atual.ocupado = True
             pagina.numero_quadro = i_quadro
-            return
+            pagina.ciclo_ultimo_acesso = ciclo
+            return True
         DebugLogger.log(f"Quadro {i_quadro} indisponível.")
         while i_quadro != inicio_busca:
             i_quadro, quadro_atual = self.next()
@@ -33,9 +34,18 @@ class Memoria:
                 DebugLogger.log(f"Quadro {i_quadro} disponível. Alocando")
                 quadro_atual.ocupado = True
                 pagina.numero_quadro = i_quadro
-                return
+                pagina.ciclo_ultimo_acesso = ciclo
+                return True
             DebugLogger.log(f"Quadro {i_quadro} indisponível.")
         DebugLogger.log("Nenhum quadro disponível encontrado.")
+        return False
+
+    def desalocar(self, pagina : Pagina):
+        quadro = self.lista_enderecos[pagina.numero_quadro]
+        quadro.ocupado = False
+        for i in range(len(quadro.bytes)):
+            quadro.bytes[i] = 0
+        return
 
     def next(self):
         ultimo_quadro = self.lista_enderecos[self.proximo_indice]
