@@ -6,3 +6,4 @@ tamanho_memoria_principal = 15 * MB
 tamanho_memoria_secundaria = 15 * MB
 tamanho_pagina = 1 * MB
 qtd_bits_endereco = 64
+ciclo = 0
