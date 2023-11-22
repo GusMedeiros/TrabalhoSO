@@ -15,5 +15,9 @@ class PaginasProcesso:
         for i_pagina in range(qtd_paginas):
             DebugLogger.log(f"Criando página {i_pagina} na tabela de páginas do processo")
             self.paginas.append(Pagina(0, i_pagina, id_processo))
-            
 
+    def remove_pagina(self, pagina):
+        self.paginas.remove(pagina)
+
+    def remove_pagina_por_numero(self, numero_pagina):
+        self.paginas.pop(numero_pagina)

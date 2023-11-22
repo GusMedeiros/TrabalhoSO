@@ -14,6 +14,9 @@ class Processo:
         self.paginas_de_processo = PaginasProcesso()
         self.paginas_de_processo.cria_paginas(tamanho, tamanho_pagina, id_processo)
 
+    def finalizar(self):
+        self.estado = Estado.FINALIZADO
+        self.tamanho = 0
     def get_paginas(self):
         return self.paginas_de_processo.paginas
     

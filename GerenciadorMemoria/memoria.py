@@ -1,5 +1,6 @@
 from typing import List
 
+from GerenciadorMemoria.processo import Processo
 from debug_logger import DebugLogger
 from pagina import Pagina
 from quadro import Quadro

@@ -11,7 +11,7 @@ class MemoriaVirtual:
         if len(self.quadros_virtuais) >= self.max_paginas:
             print("Máximo de páginas em memoria secundária atingido!")
         self.quadros_virtuais.append(_QuadroMemoriaVirtual(quadro, pagina))
-        print(f"Página {pagina.numero} de P{pagina.id_processo} foi alocada na memoria virtual")
+        print(f"Página {pagina.numero_quadro} de P{pagina.id_processo} foi alocada na memoria virtual")
 
     def remove_pagina(self, pagina_pedida):
         for i in range(len(self.quadros_virtuais)):

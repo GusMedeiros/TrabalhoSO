@@ -5,6 +5,7 @@ from interpretador import Interpretador
 
 
 def main():
+    #TODO: INSTRUCAO
     #TODO: TRATAR QUANDO NÃO HOUVER ESPAÇO NEM NA MP NEM NA MEM SECUNDARIA
     print(f"Tamanho memória principal: {tamanho_memoria_principal}b | Tamanho da página: {tamanho_pagina}b\n")
     print("Inicializando a memória. Isso pode demorar")
@@ -15,7 +16,6 @@ def main():
     interpretador = Interpretador(gerenciador_memoria)
     interpretador.executar_arquivo("instrucoes.txt")
     input("Main finalizada. Aperte qualquer botão para sair")
-    ciclo = 0
 
 DebugLogger.ligar()
 main()

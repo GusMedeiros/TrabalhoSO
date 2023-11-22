@@ -23,11 +23,12 @@ class Interpretador:
     def executar_arquivo(self, nome_arquivo):
         with open(nome_arquivo) as instrucoes:
             for i, instrucao in enumerate(instrucoes):
-                print(f"Lendo do arquivo instrução {i}: {instrucao}")
+                print(f"Lendo do arquivo instrução {i+1}: {instrucao}")
                 self.executar(instrucao)
 
     def executar(self, instrucao: str):
         id_processo, tipo_instrucao, arg_3, endereco_escrita = self.parse_instrucao(instrucao)
+        print("O TIPO DA INSTRUÇÃO É: ", tipo_instrucao)
         if tipo_instrucao == "P":
             self.gm.acessa_instrucao(id_processo, arg_3, self.ciclo)
             return
@@ -43,6 +44,7 @@ class Interpretador:
             self.gm.escrita_em_memoria(id_processo, arg_3, endereco_escrita, self.ciclo)
             return
         if tipo_instrucao == "T":
+            self.gm.termina_processo(id_processo, self.ciclo)
             return
 
     def parse_instrucao(self, instrucao):
@@ -50,6 +52,10 @@ class Interpretador:
         instrucao_split = instrucao.split()
         id_processo = int(instrucao_split[0].replace("P", ""))
         tipo_instrucao = instrucao_split[1]
+
+        if tipo_instrucao == "T":
+            return id_processo, tipo_instrucao, None, None
+
         if tipo_instrucao in ["P", "R", "W", "I"]:
             arg_3 = int(instrucao_split[2], 2)
         else:
