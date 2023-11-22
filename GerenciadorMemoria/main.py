@@ -5,7 +5,7 @@ from interpretador import Interpretador
 
 
 def main():
-    #TODO: INSTRUCAO
+    #TODO: INSTRUCOES DE ESCRITA TEM QUE MODIFICAR BIT M
     #TODO: TRATAR QUANDO NÃO HOUVER ESPAÇO NEM NA MP NEM NA MEM SECUNDARIA
     print(f"Tamanho memória principal: {tamanho_memoria_principal}b | Tamanho da página: {tamanho_pagina}b\n")
     print("Inicializando a memória. Isso pode demorar")

@@ -2,6 +2,7 @@ from math import ceil
 from typing import List
 from random import randint
 
+from GerenciadorMemoria.processo import Processo
 from debug_logger import DebugLogger
 from memoria import Memoria
 from pagina import Pagina
@@ -148,6 +149,12 @@ class GerenciadorMemoria:
         processo = self.tabela_processos.busca_processo(id_processo)
         for i in range(len(processo.get_paginas())):
             pagina = processo.get_paginas()[0]
-            self.memoria.desalocar(pagina)
-            processo.paginas_de_processo.remove_pagina(pagina)
+            self.desalocar(pagina, processo)
             processo.finalizar()
+
+    def desalocar(self, pagina: Pagina, processo: Processo):
+        if pagina.P:
+            self.memoria.desalocar(pagina)
+        else:
+            self.memoria_secundaria.remove_pagina(pagina)
+        processo.paginas_de_processo.remove_pagina(pagina)
