@@ -37,6 +37,7 @@ class GerenciadorMemoria:
         DebugLogger.log(f"Espaço indisponível. Alocando para a memoria secundaria")
         for i in processo.get_paginas():
             self.memoria_secundaria.grava_pagina(i, None)
+        DebugLogger.log(f"Fim da função. Espaço utilizado: {self.calcular_uso()*100:.2f}% ")
 
     def calcula_qtd_paginas(self, tamanho):
         return ceil(tamanho//self.tamanho_pagina)
@@ -64,7 +65,7 @@ class GerenciadorMemoria:
         print(f"Lendo página {pag_e_offset['pagina']}, offset {pag_e_offset['offset']} de P{id_processo}")
         pagina_pedida = processo.get_paginas()[pag_e_offset['pagina']]
         if not pagina_pedida.P:
-            self.lru(pagina_pedida)
+            self.lru(pagina_pedida, ciclo)
         quadro = self.memoria.lista_enderecos[pagina_pedida.numero_quadro]
         print(f"Valor no byte {pag_e_offset['offset']} do quadro {pagina_pedida.numero_quadro} = {quadro.bytes[pag_e_offset['offset']]}")
         pagina_pedida.ciclo_ultimo_acesso = ciclo
@@ -78,7 +79,7 @@ class GerenciadorMemoria:
         print(f"Acessando página {pag_e_offset['pagina']}, offset {pag_e_offset['offset']} de P{id_processo}")
         pagina_pedida = processo.get_paginas()[pag_e_offset['pagina']]
         if not pagina_pedida.P:
-            self.lru(pagina_pedida)
+            self.lru(pagina_pedida, ciclo)
         #quando a pagina está na memória, retorna o valor no quadro correspondente
         quadro = self.memoria.lista_enderecos[pagina_pedida.numero_quadro]
         quadro.bytes[pag_e_offset["offset"]] = valor
@@ -133,5 +134,4 @@ class GerenciadorMemoria:
             while len(conteudo) > 0:
                 temp = conteudo.pop()
                 quadro.bytes[temp[0]] = temp[1]
-
         return 
