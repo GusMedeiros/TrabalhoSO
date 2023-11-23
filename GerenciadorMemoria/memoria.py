@@ -18,16 +18,20 @@ class Memoria:
             self.lista_enderecos.append((Quadro(tamanho_quadro)))
 
     def alocar(self, pagina: Pagina, ciclo):
-        #Os retornos podem ser colocados em um if para determinar se o LRU deve ser ativado
+        # Os retornos podem ser colocados em um if para determinar se o LRU deve ser ativado
         i_quadro, quadro_atual = self.next()
         inicio_busca = i_quadro
+
+        # do while simulado
         if not quadro_atual.ocupado:
             DebugLogger.log(f"Quadro {i_quadro} disponível. Alocando")
             quadro_atual.ocupado = True
             pagina.numero_quadro = i_quadro
             pagina.ciclo_ultimo_acesso = ciclo
+            pagina.P = True
             return True
         DebugLogger.log(f"Quadro {i_quadro} indisponível.")
+
         while i_quadro != inicio_busca:
             i_quadro, quadro_atual = self.next()
             if not quadro_atual.ocupado:
@@ -35,12 +39,13 @@ class Memoria:
                 quadro_atual.ocupado = True
                 pagina.numero_quadro = i_quadro
                 pagina.ciclo_ultimo_acesso = ciclo
+                pagina.P = True
                 return True
             DebugLogger.log(f"Quadro {i_quadro} indisponível.")
         DebugLogger.log("Nenhum quadro disponível encontrado.")
         return False
 
-    def desalocar(self, pagina : Pagina):
+    def desalocar_quadros(self, pagina : Pagina):
         quadro = self.lista_enderecos[pagina.numero_quadro]
         quadro.ocupado = False
         for i in range(len(quadro.bytes)):
@@ -65,7 +70,7 @@ class Memoria:
     def qtd_quadros_ocupados(self):
         contador = 0
         for quadro in self.lista_enderecos:
-            if not quadro.ocupado:
+            if quadro.ocupado:
                 contador += 1
         return contador
 

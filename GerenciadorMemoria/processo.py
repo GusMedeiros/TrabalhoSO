@@ -1,4 +1,5 @@
 from enum import Enum
+from math import ceil
 from typing import List
 
 from paginas_de_processo import PaginasProcesso
@@ -14,23 +15,40 @@ class Processo:
         self.paginas_de_processo = PaginasProcesso()
         self.paginas_de_processo.cria_paginas(tamanho, tamanho_pagina, id_processo)
 
+    def finalizar(self):
+        self.estado = Estado.FINALIZADO
+        self.tamanho = 0
+
     def get_paginas(self):
         return self.paginas_de_processo.paginas
-    
+
     def get_num_pagina_e_offset(self, endereco_logico):
-        total_de_paginas = self.tamanho // tamanho_pagina
-        bits_pagina = total_de_paginas.bit_length()
-        bits_offset = tamanho_pagina.bit_length() - bits_pagina
-        
-        #Andamos o valor do offset para a direita para obter o número da página
-        numero_pagina = endereco_logico >> (bits_offset+1)
-        if(numero_pagina >= total_de_paginas):
-            print("ERRO: tentativa de acessar página fora do limite")
-            return
-        #Pegamos os bits_offset menos significativos como o offset
-        offset = endereco_logico % pow(2, bits_offset)
-        ret = {"pagina": numero_pagina, "offset": offset}
-        return ret
+        pagina = endereco_logico // tamanho_pagina
+        offset = endereco_logico % tamanho_pagina
+        if not self.dentro_dos_limites(endereco_logico):
+            pass
+        return {"pagina": pagina, "offset": offset}
+
+    def dentro_dos_limites(self, endereco_logico):
+        if endereco_logico < 0:
+            raise Exception("Erro! Endereço negativo passado.")
+
+        qtd_paginas = ceil(self.tamanho / tamanho_pagina)  # definicao correta
+        pagina_correspondente = endereco_logico // tamanho_pagina  # definicao correta
+        offset = endereco_logico % tamanho_pagina  # definicao correta
+        ultima_pagina = qtd_paginas - 1  # obvio
+
+        if pagina_correspondente > ultima_pagina:
+            raise Exception(f"ERRO! Endereço corresponde a uma página maior do que o permitido.\n"
+                            f"Pagina: {pagina_correspondente}, Offset: {offset}, Endereço: {endereco_logico}")
+
+        # ultima pagina pode ter espaço nao usado. esse espaço deve estar fora do limite
+        espaco_nao_usado = (qtd_paginas * tamanho_pagina) - self.tamanho  # definicao correta
+        maior_offset_permitido = tamanho_pagina - espaco_nao_usado - 1
+        if pagina_correspondente == ultima_pagina and offset > maior_offset_permitido:
+            raise Exception("ERRO! Endereço corresponde à última página, porém cai em espaço não-ocupado da página.\n"
+                            f"Pagina: {pagina_correspondente}, Offset: {offset}, Endereço: {endereco_logico}")
+        return True
 
 
 class Estado(Enum):

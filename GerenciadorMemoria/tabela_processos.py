@@ -1,6 +1,5 @@
 from typing import List
 
-from debug_logger import DebugLogger
 from processo import Processo
 
 
@@ -9,6 +8,7 @@ class TabelaProcessos:
         self.tamanho_pagina = tamanho_pagina
         self.prox_id = 0  # pegar sempre pela funcao create_id para autoincrementar quando usar, pra nunca repetir
         self.processos: List[Processo] = []
+        self.processos_terminados: List[Processo] = []
         self.ids_utilizados = set()
 
     def cria_processo(self, tamanho, id_processo=None):
@@ -44,3 +44,8 @@ class TabelaProcessos:
         for i, processo in enumerate(self.processos):
             if processo.id == id_processo:
                 return i
+
+    def finalizar_processo(self, processo):
+        self.processos.remove(processo)
+        self.processos_terminados.append(processo)
+
