@@ -18,10 +18,11 @@ class MemoriaVirtual:
 
     def remove_pagina(self, pagina_pedida):
         for i in range(len(self.quadros_virtuais)):
+            pag = self.quadros_virtuais[i].pagina
             if self.quadros_virtuais[i].pagina == pagina_pedida:
                 qv = self.quadros_virtuais.pop(i)
                 return qv.valores
-        print("Pagina não encontrada!")
+            
         return None
 
     def qtd_quadros_ocupados(self):
