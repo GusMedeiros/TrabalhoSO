@@ -163,6 +163,7 @@ class GerenciadorMemoria:
         return
 
     def termina_processo(self, id_processo, ciclo):
+        print(f"Terminando o processo P{id_processo}\nEsse processo pode demorar")
         processo = self.tabela_processos.busca_processo(id_processo)
         for i in range(len(processo.get_paginas())):
             pagina = processo.get_paginas()[0]
