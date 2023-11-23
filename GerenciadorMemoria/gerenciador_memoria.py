@@ -168,7 +168,9 @@ class GerenciadorMemoria:
         for i in range(len(processo.get_paginas())):
             pagina = processo.get_paginas()[0]
             self.desalocar_pagina(pagina, processo)
-            processo.finalizar()
+        processo.finalizar()
+        self.tabela_processos.finalizar_processo(processo)
+
 
     def desalocar_pagina(self, pagina: Pagina, processo: Processo):
         if pagina.P:
