@@ -29,11 +29,11 @@ class Processo:
             raise Exception("Erro: Tentativa de acessar byte fora do limite")
         return {"pagina": pagina, "offset": offset}
 
-    def checar_limites(self, endereco_logico):
+    def dentro_dos_limites(self, endereco_logico):
         if endereco_logico < 0:
             raise Exception("Erro! Endereço negativo passado.")
 
-        qtd_paginas = ceil(self.tamanho // tamanho_pagina)  # definicao correta
+        qtd_paginas = ceil(self.tamanho / tamanho_pagina)  # definicao correta
         pagina_correspondente = endereco_logico // tamanho_pagina  # definicao correta
         offset = endereco_logico % tamanho_pagina  # definicao correta
         ultima_pagina = qtd_paginas - 1  # obvio
@@ -43,8 +43,8 @@ class Processo:
 
         # ultima pagina pode ter espaço nao usado. esse espaço deve estar fora do limite
         espaco_nao_usado = (qtd_paginas * tamanho_pagina) - self.tamanho  # definicao correta
-        ultimo_byte_permitido = tamanho_pagina - espaco_nao_usado
-        if pagina_correspondente == ultima_pagina and offset > ultimo_byte_permitido:
+        maior_offset_permitido = tamanho_pagina - espaco_nao_usado
+        if pagina_correspondente == ultima_pagina and offset > maior_offset_permitido:
             raise Exception("ERRO! Endereço corresponde à última página, porém cai em espaço não-ocupado da página.")
 
 
