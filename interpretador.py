@@ -23,7 +23,7 @@ class Interpretador:
     def executar_arquivo(self, nome_arquivo):
         with open(nome_arquivo) as instrucoes:
             for i, instrucao in enumerate(instrucoes):
-                print(f"Lendo do arquivo instrução {i+1}: {instrucao}")
+                print(f"Lendo do arquivo instrução {i + 1}: {instrucao}")
                 self.executar(instrucao)
 
     def executar(self, instrucao: str):
@@ -85,3 +85,4 @@ class Interpretador:
             return numero_unidades * GB
         if unidade == "TB":
             return numero_unidades * TB
+        raise (Exception("ERRO! UNIDADE MÁXIMA É TB"))

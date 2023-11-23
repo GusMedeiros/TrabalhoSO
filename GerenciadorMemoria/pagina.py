@@ -5,5 +5,5 @@ class Pagina:
         self.M = False  # bit de modificação na memoria principal
         self.ciclo_ultimo_acesso = 0
         #Informação para facilitar a troca de paginas
-        self.numero_quadro = id_pagina
+        self.id_pagina = id_pagina
         self.id_processo = id_processo

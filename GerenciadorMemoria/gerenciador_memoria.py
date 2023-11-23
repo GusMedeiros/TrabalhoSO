@@ -24,41 +24,56 @@ class GerenciadorMemoria:
         self.memoria_secundaria = MemoriaVirtual(tamanho_memoria_secundaria, tamanho_pagina)
         DebugLogger.log("===Memória secundária inicializada.\n")
 
+    def tem_espaco(self, tamanho: int):
+        tamanho_livre_mp = self.calcular_bytes_livres_mp()
+        tamanho_livre_ms = (self.memoria_secundaria.total_quadros -
+                              self.memoria_secundaria.qtd_quadros_ocupados()) * tamanho_pagina
+        return (tamanho_livre_ms + tamanho_livre_mp) >= tamanho
+
     def cria_processo(self, tamanho, ciclo, id_processo=None):
         DebugLogger.log(f"===Criando processo de {tamanho}b")
-        id_processo = self.tabela_processos.cria_processo(tamanho, id_processo)
-        DebugLogger.log(
-            f"P{id_processo} Alocado na tabela de processos no índice {self.tabela_processos.indice_processo(id_processo)}\n")
-        processo = self.tabela_processos.busca_processo(id_processo)
-        DebugLogger.log(f"Checando se há {tamanho}b disponíveis na MP")
-        tem_espaco = self.memoria.checar_disponibilidade(self.calcula_qtd_paginas(processo.tamanho))
+        tem_espaco = self.tem_espaco(tamanho)
         if tem_espaco:
+            id_processo = self.tabela_processos.cria_processo(tamanho, id_processo)
+            DebugLogger.log(
+                f"P{id_processo} Alocado na tabela de processos no índice {self.tabela_processos.indice_processo(id_processo)}\n")
+            processo = self.tabela_processos.busca_processo(id_processo)
+            DebugLogger.log(f"Checando se há {tamanho}b disponíveis na MP")
             DebugLogger.log(f"Espaço disponível. Alocando quadros na memória principal")
-            self.alocar_processo(processo.get_paginas(), ciclo)
-            DebugLogger.log(f"===Processo alocado com sucesso. Espaço utilizado: {self.calcular_uso() * 100:.2f}%\n")
+            self.alocar_paginas_processo(processo.get_paginas(), ciclo)
+            DebugLogger.log(
+                f"===Processo alocado com sucesso. \n"
+                f"Espaço utilizado MP: {self.calcular_uso_porcentagem_mp() * 100:.2f}%\n"
+                f"Espaço utilizado MS: {self.calcular_uso_porcentagem_ms() * 100:.2f}%\n")
             return
-        DebugLogger.log(f"Espaço indisponível. Alocando para a memoria secundaria")
-        for i in processo.get_paginas():
-            self.memoria_secundaria.grava_pagina(i, None)
-        DebugLogger.log(f"Fim da função. Espaço utilizado: {self.calcular_uso() * 100:.2f}% ")
+        DebugLogger.log(f"Processo não cabe no espaço disponível do sistema inteiro. Alocação física cancelada")
+
+    def calcular_uso_porcentagem_ms(self):
+        return self.memoria_secundaria.qtd_quadros_ocupados() / self.memoria_secundaria.total_quadros
+    def calcular_uso_porcentagem_mp(self):
+        return self.memoria.qtd_quadros_ocupados() / self.memoria.total_quadros()
 
     def calcula_qtd_paginas(self, tamanho):
         return ceil(tamanho // self.tamanho_pagina)
 
-    def alocar_processo(self, paginas: List[Pagina], ciclo):
+    def alocar_paginas_processo(self, paginas: List[Pagina], ciclo):
         for i, pagina in enumerate(paginas):
             if not pagina.P:
                 DebugLogger.log(f"Página {i} não presente na MP.")
-                if not self.memoria.alocar(pagina, ciclo):
-                    # No caso do processo não caber totalmente na MP, alocar o restante na memória virtual
+                if self.memoria.qtd_quadros_ocupados() < self.memoria.total_quadros():
+                    self.memoria.alocar(pagina, ciclo)
+                else:
                     self.memoria_secundaria.grava_pagina(pagina, None)
-                DebugLogger.log(f"Página {i} Alocada com sucesso.")
-                pagina.P = True
+                DebugLogger.log(f"Página {i} Alocada com sucesso.\n")
             else:
                 DebugLogger.log(f"Página {i} já está presente na MP. Prosseguindo")
 
-    def calcular_uso(self):
-        return 1 - self.memoria.qtd_quadros_ocupados() / self.memoria.total_quadros()
+    def calcular_bytes_livres_mp(self):
+        return (self.memoria.total_quadros() - self.memoria.qtd_quadros_ocupados()) * tamanho_pagina
+
+    def calcular_uso_bytes_ms(self):
+        return self.memoria_secundaria.qtd_quadros_ocupados() * tamanho_pagina
+
 
     def leitura_de_memoria(self, id_processo, endereco_logico, ciclo):
         processo = self.tabela_processos.busca_processo(id_processo)
@@ -131,7 +146,7 @@ class GerenciadorMemoria:
         pagina_mais_antiga.P = False
         self.memoria_secundaria.grava_pagina(pagina_mais_antiga,
                                              self.memoria.lista_enderecos[pagina_mais_antiga.numero_quadro])
-        self.memoria.desalocar(pagina_mais_antiga)
+        self.memoria.desalocar_quadros(pagina_mais_antiga)
         pagina_mais_antiga.numero_quadro = None
         pagina_mais_antiga.ciclo_ultimo_acesso = None
         # Adicionando a nova pagina
@@ -149,12 +164,12 @@ class GerenciadorMemoria:
         processo = self.tabela_processos.busca_processo(id_processo)
         for i in range(len(processo.get_paginas())):
             pagina = processo.get_paginas()[0]
-            self.desalocar(pagina, processo)
+            self.desalocar_pagina(pagina, processo)
             processo.finalizar()
 
-    def desalocar(self, pagina: Pagina, processo: Processo):
+    def desalocar_pagina(self, pagina: Pagina, processo: Processo):
         if pagina.P:
-            self.memoria.desalocar(pagina)
+            self.memoria.desalocar_quadros(pagina)
         else:
             self.memoria_secundaria.remove_pagina(pagina)
         processo.paginas_de_processo.remove_pagina(pagina)

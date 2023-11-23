@@ -3,15 +3,16 @@ from config import tamanho_memoria_secundaria, tamanho_pagina
 from quadro import Quadro
 class MemoriaVirtual:
     def __init__(self, tamanho_memoria_secundaria, tamanho_pagina):
-        self.max_paginas = tamanho_memoria_secundaria // tamanho_pagina
+        self.total_quadros = tamanho_memoria_secundaria // tamanho_pagina
         self.quadros_virtuais = []
         pass
     
     def grava_pagina(self, pagina: Pagina, quadro: Quadro):
-        if len(self.quadros_virtuais) >= self.max_paginas:
+        if len(self.quadros_virtuais) >= self.total_quadros:
             print("Máximo de páginas em memoria secundária atingido!")
+            return
         self.quadros_virtuais.append(_QuadroMemoriaVirtual(quadro, pagina))
-        print(f"Página {pagina.numero_quadro} de P{pagina.id_processo} foi alocada na memoria virtual")
+        print(f"Página {pagina.id_pagina} de P{pagina.id_processo} foi alocada na memoria virtual")
 
     def remove_pagina(self, pagina_pedida):
         for i in range(len(self.quadros_virtuais)):
@@ -20,6 +21,9 @@ class MemoriaVirtual:
                 return qv.valores
         print("Pagina não encontrada!")
         return None
+
+    def qtd_quadros_ocupados(self):
+        return len(self.quadros_virtuais)
 
 class _QuadroMemoriaVirtual:
     def __init__(self, quadro: Quadro, pagina: Pagina):
