@@ -1,7 +1,5 @@
 # Modulo responsavel por interpretar as intruçoes a partir de um dado arquivo
 
-from GerenciadorMemoria import processo
-from GerenciadorMemoria.debug_logger import DebugLogger
 from GerenciadorMemoria.gerenciador_memoria import GerenciadorMemoria
 
 
@@ -25,6 +23,7 @@ class Interpretador:
             for i, instrucao in enumerate(instrucoes):
                 print(f"Lendo do arquivo instrução {i + 1}: {instrucao}")
                 self.executar(instrucao)
+                self.ciclo += 1
 
     def executar(self, instrucao: str):
         id_processo, tipo_instrucao, arg_3, endereco_escrita = self.parse_instrucao(instrucao)

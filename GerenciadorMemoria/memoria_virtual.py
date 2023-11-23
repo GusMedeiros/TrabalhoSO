@@ -1,9 +1,10 @@
+from math import ceil
+
 from pagina import Pagina
-from config import tamanho_memoria_secundaria, tamanho_pagina
 from quadro import Quadro
 class MemoriaVirtual:
     def __init__(self, tamanho_memoria_secundaria, tamanho_pagina):
-        self.total_quadros = tamanho_memoria_secundaria // tamanho_pagina
+        self.total_quadros = ceil(tamanho_memoria_secundaria / tamanho_pagina)
         self.quadros_virtuais = []
         pass
     
@@ -11,6 +12,7 @@ class MemoriaVirtual:
         if len(self.quadros_virtuais) >= self.total_quadros:
             print("Máximo de páginas em memoria secundária atingido!")
             return
+
         self.quadros_virtuais.append(_QuadroMemoriaVirtual(quadro, pagina))
         print(f"Página {pagina.id_pagina} de P{pagina.id_processo} foi alocada na memoria virtual")
 

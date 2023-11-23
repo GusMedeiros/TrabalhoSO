@@ -1,6 +1,5 @@
 from typing import List
 
-from debug_logger import DebugLogger
 from processo import Processo
 
 

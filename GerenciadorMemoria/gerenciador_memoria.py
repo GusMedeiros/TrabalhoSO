@@ -31,9 +31,10 @@ class GerenciadorMemoria:
         return (tamanho_livre_ms + tamanho_livre_mp) >= tamanho
 
     def cria_processo(self, tamanho, ciclo, id_processo=None):
-        DebugLogger.log(f"===Criando processo de {tamanho}b")
+        DebugLogger.log(f"===Criando processo de tamanho{tamanho}b")
         tem_espaco = self.tem_espaco(tamanho)
         if tem_espaco:
+            DebugLogger.log(f"Tem espaço na memória principal e/ou secundária para o processo.\n")
             id_processo = self.tabela_processos.cria_processo(tamanho, id_processo)
             DebugLogger.log(
                 f"P{id_processo} Alocado na tabela de processos no índice {self.tabela_processos.indice_processo(id_processo)}\n")
@@ -54,7 +55,7 @@ class GerenciadorMemoria:
         return self.memoria.qtd_quadros_ocupados() / self.memoria.total_quadros()
 
     def calcula_qtd_paginas(self, tamanho):
-        return ceil(tamanho // self.tamanho_pagina)
+        return ceil(tamanho / self.tamanho_pagina)
 
     def alocar_paginas_processo(self, paginas: List[Pagina], ciclo):
         for i, pagina in enumerate(paginas):
@@ -137,6 +138,8 @@ class GerenciadorMemoria:
         # Procurando a pagina mais antiga
         for proc in self.tabela_processos.get_processos():
             for pag in proc.get_paginas():
+                if pag.ciclo_ultimo_acesso is None:
+                    pass
                 if pag.ciclo_ultimo_acesso < pagina_mais_antiga.ciclo_ultimo_acesso:
                     pagina_mais_antiga = pag
         print(

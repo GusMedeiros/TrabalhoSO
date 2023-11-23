@@ -26,7 +26,7 @@ class Processo:
         pagina = endereco_logico // tamanho_pagina
         offset = endereco_logico % tamanho_pagina
         if not self.dentro_dos_limites(endereco_logico):
-            raise Exception("Erro: Tentativa de acessar byte fora do limite")
+            pass
         return {"pagina": pagina, "offset": offset}
 
     def dentro_dos_limites(self, endereco_logico):
@@ -39,13 +39,16 @@ class Processo:
         ultima_pagina = qtd_paginas - 1  # obvio
 
         if pagina_correspondente > ultima_pagina:
-            raise Exception("ERRO! Endereço corresponde a uma página maior do que o permitido")
+            raise Exception(f"ERRO! Endereço corresponde a uma página maior do que o permitido.\n"
+                            f"Pagina: {pagina_correspondente}, Offset: {offset}, Endereço: {endereco_logico}")
 
         # ultima pagina pode ter espaço nao usado. esse espaço deve estar fora do limite
         espaco_nao_usado = (qtd_paginas * tamanho_pagina) - self.tamanho  # definicao correta
-        maior_offset_permitido = tamanho_pagina - espaco_nao_usado
+        maior_offset_permitido = tamanho_pagina - espaco_nao_usado - 1
         if pagina_correspondente == ultima_pagina and offset > maior_offset_permitido:
-            raise Exception("ERRO! Endereço corresponde à última página, porém cai em espaço não-ocupado da página.")
+            raise Exception("ERRO! Endereço corresponde à última página, porém cai em espaço não-ocupado da página.\n"
+                            f"Pagina: {pagina_correspondente}, Offset: {offset}, Endereço: {endereco_logico}")
+        return True
 
 
 class Estado(Enum):
