@@ -1,6 +1,6 @@
 # Modulo responsavel por interpretar as intruçoes a partir de um dado arquivo
 
-from GerenciadorMemoria.gerenciador_memoria import GerenciadorMemoria
+from gerenciador_memoria import GerenciadorMemoria
 
 
 # P - Executa instruçao no endereço

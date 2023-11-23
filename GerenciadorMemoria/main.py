@@ -14,7 +14,7 @@ def main():
     gerenciador_memoria = GerenciadorMemoria(tamanho_memoria_principal, tamanho_pagina)
     ciclo = 0
     interpretador = Interpretador(gerenciador_memoria)
-    interpretador.executar_arquivo("instrucoes.txt")
+    interpretador.executar_arquivo("./instrucoes.txt")
     input("Main finalizada. Aperte qualquer botão para sair")
 
 DebugLogger.ligar()

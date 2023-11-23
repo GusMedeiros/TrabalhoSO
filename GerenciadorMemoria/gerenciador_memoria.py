@@ -2,7 +2,7 @@ from math import ceil
 from typing import List
 from random import randint
 
-from GerenciadorMemoria.processo import Processo
+from processo import Processo
 from debug_logger import DebugLogger
 from memoria import Memoria
 from pagina import Pagina
@@ -134,16 +134,15 @@ class GerenciadorMemoria:
     def lru(self, pagina_pedida: Pagina, ciclo):
         # Começamos da primeira página
         pagina_mais_antiga = self.tabela_processos.get_processos()[0].get_paginas()[0]
-
         # Procurando a pagina mais antiga
         for proc in self.tabela_processos.get_processos():
             for pag in proc.get_paginas():
-                if pag.ciclo_ultimo_acesso is None:
-                    pass
-                if pag.ciclo_ultimo_acesso < pagina_mais_antiga.ciclo_ultimo_acesso:
+                if not pagina_mais_antiga.P:
+                    pagina_mais_antiga = pag
+                elif pag.P and pag.ciclo_ultimo_acesso < pagina_mais_antiga.ciclo_ultimo_acesso:
                     pagina_mais_antiga = pag
         print(
-            f"Substituindo a página {pagina_mais_antiga.numero_quadro} de P{pagina_mais_antiga.id_processo} por {pagina_pedida.numero_quadro} de P{pagina_pedida.id_processo}.")
+            f"Substituindo a página {pagina_mais_antiga.numero_quadro} de P{pagina_mais_antiga.id_processo} por {pagina_pedida.id_pagina} de P{pagina_pedida.id_processo}.")
 
         # Removendo a pagina mais antiga da memória
         pagina_mais_antiga.P = False
